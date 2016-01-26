@@ -54,6 +54,8 @@ function Size (parent) {
     this.renderSizeChanged = false;
 
     this.parent = parent != null ? parent : null;
+
+    this.refresh = false;
 }
 
 // an enumeration of the different types of size modes
@@ -170,8 +172,9 @@ Size.prototype.setSizeMode = function setSizeMode (x, y, z) {
     if (x != null) x = resolveSizeMode(x);
     if (y != null) y = resolveSizeMode(y);
     if (z != null) z = resolveSizeMode(z);
-    this.sizeModeChanged = setVec(this.sizeMode, x, y, z);
-    return this;
+    var ch = setVec(this.sizeMode, x, y, z);
+    this.sizeModeChanged = ch;
+    this.refresh |= ch;
 };
 
 /**
@@ -197,8 +200,10 @@ Size.prototype.getSizeMode = function getSizeMode () {
  * @return {Size} this
  */
 Size.prototype.setAbsolute = function setAbsolute (x, y, z) {
-    this.absoluteSizeChanged = setVec(this.absoluteSize, x, y, z);
-    return this;
+	var ch = setVec(this.absoluteSize, x, y, z);
+	this.absoluteSizeChanged = ch;
+	this.refresh |= ch;
+	return this;
 };
 
 /**
@@ -224,8 +229,10 @@ Size.prototype.getAbsolute = function getAbsolute () {
  * @return {Size} this
  */
 Size.prototype.setProportional = function setProportional (x, y, z) {
-    this.proportionalSizeChanged = setVec(this.proportionalSize, x, y, z);
-    return this;
+	var ch = setVec(this.proportionalSize, x, y, z);
+	this.proportionalSizeChanged = ch;
+	this.refresh |= ch;
+	return this;
 };
 
 /**
@@ -251,7 +258,9 @@ Size.prototype.getProportional = function getProportional () {
  * @return {Size} this
  */
 Size.prototype.setDifferential = function setDifferential (x, y, z) {
-    this.differentialSizeChanged = setVec(this.differentialSize, x, y, z);
+    var ch = setVec(this.differentialSize, x, y, z);
+    this.differentialSizeChanged = ch;
+    this.refresh |= ch;
     return this;
 };
 
@@ -324,7 +333,9 @@ Size.prototype.fromComponents = function fromComponents (components) {
         }
         changed = changed || prev !== target[i];
     }
-    this.sizeChanged = changed;
+    var ch = changed;
+    this.sizeChanged = ch;
+    this.refresh |= ch;
     return changed;
 };
 

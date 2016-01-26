@@ -134,8 +134,11 @@ TransformSystem.prototype.get = function get (path) {
  *
  * @return {undefined} undefined
  */
-TransformSystem.prototype.update = function update () {
-    var transforms = this.pathStore.getItems();
+TransformSystem.prototype.update = function update()
+{
+	if (stats) stats.ProfileStart("trUp")
+
+	var transforms = this.pathStore.getItems();
     var paths = this.pathStore.getPaths();
     var transform;
     var changed;
@@ -144,25 +147,36 @@ TransformSystem.prototype.update = function update () {
     var offsets;
     var components;
 
-    for (var i = 0, len = transforms.length ; i < len ; i++) {
-        node = Dispatch.getNode(paths[i]);
-        if (!node) continue;
-        components = node.getComponents();
-        transform = transforms[i];
-        vectors = transform.vectors;
-        offsets = transform.offsets;
-        if (offsets.alignChanged) alignChanged(node, components, offsets);
-        if (offsets.mountPointChanged) mountPointChanged(node, components, offsets);
-        if (offsets.originChanged) originChanged(node, components, offsets);
-        if (vectors.positionChanged) positionChanged(node, components, vectors);
-        if (vectors.rotationChanged) rotationChanged(node, components, vectors);
-        if (vectors.scaleChanged) scaleChanged(node, components, vectors);
-        if ((changed = transform.calculate(node))) {
-            transformChanged(node, components, transform);
-            if (changed & Transform.LOCAL_CHANGED) localTransformChanged(node, components, transform.getLocalTransform());
-            if (changed & Transform.WORLD_CHANGED) worldTransformChanged(node, components, transform.getWorldTransform());
-        }
+    for (var i = 0, len = transforms.length ; i < len ; i++)
+    {
+    	transform = transforms[i];
+    	if (transform.refresh)
+    	{
+	    	transform.refresh = false;
+
+    		node = Dispatch.getNode(paths[i]);
+    		if (node)
+    		{
+    			components = node.getComponents();
+    			transform = transforms[i];
+    			vectors = transform.vectors;
+    			offsets = transform.offsets;
+    			if (offsets.alignChanged) alignChanged(node, components, offsets);
+    			if (offsets.mountPointChanged) mountPointChanged(node, components, offsets);
+    			if (offsets.originChanged) originChanged(node, components, offsets);
+    			if (vectors.positionChanged) positionChanged(node, components, vectors);
+    			if (vectors.rotationChanged) rotationChanged(node, components, vectors);
+    			if (vectors.scaleChanged) scaleChanged(node, components, vectors);
+    			if ((changed = transform.calculate(node))) {
+    				transformChanged(node, components, transform);
+    				if (changed & Transform.LOCAL_CHANGED) localTransformChanged(node, components, transform.getLocalTransform());
+    				if (changed & Transform.WORLD_CHANGED) worldTransformChanged(node, components, transform.getWorldTransform());
+    			}
+    		}
+    	}
     }
+
+    if(stats) stats.ProfileEnd("trUp")
 };
 
 // private methods
