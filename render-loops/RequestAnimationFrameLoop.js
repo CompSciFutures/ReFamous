@@ -76,9 +76,9 @@ function RequestAnimationFrameLoop() {
     this._updates = [];
 
     this._looper = function(time) {
-    	if( stats ) stats.ProfileStart("gui")
+    	if (stats) stats.ProfileStart("gui");
     	_this.loop(time);
-    	if (stats) stats.ProfileEnd("gui")
+    	if (stats) stats.ProfileEnd("gui");
     };
     this._time = 0;
     this._stoppedAt = 0;
