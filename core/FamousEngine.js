@@ -159,7 +159,9 @@ FamousEngine.prototype._update = function _update () {
 
     SizeSystem.update();
     TransformSystem.update();
+    if (stats) stats.ProfileStart("osUp")
     OpacitySystem.update();
+    if (stats) stats.ProfileEnd("osUp")
 
     while (nextQueue.length) queue.unshift(nextQueue.pop());
 
