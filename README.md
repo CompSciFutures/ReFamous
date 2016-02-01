@@ -5,6 +5,18 @@ Famous Engine
 
 The Famous Engine is a free and open source JavaScript rendering engine. What makes the Famous Engine unique is its JavaScript rendering engine and 3D physics engine that gives developers the power and tools to build native quality apps and animations using pure JavaScript. It is designed to allow developers the ability to render to both DOM and WebGL in a unified API.
 
+## (Re)Famous Charter
+
+Out of respect for the tremendous amount of work the extremely generous Famous team have contributed thus far and premised on the assumption that they plan to resume work on the project at some stage in the reasonable future, the guiding principles for this Famous fork are as follows:
+
+- Only critical bugfixes will be included
+- Only the Famous engine will be covered
+- There will be no API changes
+- No new functionality will be added
+- Code base to be easily merge-able into the existing famous tree
+
+Thus it will be a stabilization of the latest dev build and nothing more.
+
 ## Getting Started    
 
 We have several [guides & tutorials on our site](http://famous.org/learn/) to help you get up and running with Famous, such as [Hello Famous](http://famous.org/learn/hello-famous.html).
