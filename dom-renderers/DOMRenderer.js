@@ -619,7 +619,19 @@ DOMRenderer.prototype.setContent = function setContent(content) {
                 this._target.element.firstChild
             );
         }
-        this._target.content.innerHTML = content;
+        if ( typeof content === 'object') {
+            if ( !(
+                    (window.HTMLElement && content instanceof window.HTMLElement) ||
+                    (window.CharacterData && content instanceof window.CharacterData) ||
+                    (window.Element && content instanceof window.Element) ||
+                    (window.EventTarget && content instanceof window.EventTarget)
+                ) )
+                throw new Error("content must be a DOM object or string: " + content);
+            this._target.content.innerHTML = "";
+            this._target.content.appendChild(content);
+        }
+        else
+            this._target.content.innerHTML = content;
     }
 
 
@@ -628,7 +640,6 @@ DOMRenderer.prototype.setContent = function setContent(content) {
         this._target.explicitHeight ? false : this._target.size[1]
     );
 };
-
 
 /**
  * Sets the passed in transform matrix (world space). Inverts the parent's world
