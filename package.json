@@ -1,6 +1,6 @@
 {
-  "name": "famous",
-  "version": "0.7.1",
+  "name": "ReFamous",
+  "version": "0.7.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -25,8 +25,8 @@
     "check-jsdoc": "eslint --reset --no-eslintrc --rule 'valid-jsdoc: 2' --ignore-path .gitignore .",
     "lint": "eslint --ignore-path .gitignore .",
     "build": "npm run build-debug && npm run build-min",
-    "build-debug": "browserify index.js -d --standalone famous > dist/famous.js",
-    "build-min": "browserify index.js --standalone famous | uglifyjs --screw-ie8 -m -c dead_code,sequences,conditionals,booleans,unused,if_return,join_vars,drop_debugger > dist/famous.min.js"
+    "build-debug": "browserify index.js -d --standalone famous > dist/refamous.js",
+    "build-min": "browserify index.js --standalone famous | uglifyjs --screw-ie8 -m -c dead_code,sequences,conditionals,booleans,unused,if_return,join_vars,drop_debugger > dist/refamous.min.js"
   },
   "repository": {
     "type": "git",
