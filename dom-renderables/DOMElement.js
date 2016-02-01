@@ -186,6 +186,10 @@ DOMElement.prototype.onMount = function onMount(node, id) {
  * @return {undefined} undefined
  */
 DOMElement.prototype.onDismount = function onDismount() {
+    for ( var i in this._styles )
+        this.setProperty(i, '');
+    for ( var i in this._attributes )
+        this.setAttribute(i, '');
     this.setProperty('display', 'none');
     this.setAttribute('data-fa-path', '');
     this.setCutoutState(false);
