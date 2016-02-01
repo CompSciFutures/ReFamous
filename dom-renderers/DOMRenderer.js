@@ -619,7 +619,19 @@ DOMRenderer.prototype.setContent = function setContent(content) {
                 this._target.element.firstChild
             );
         }
-        this._target.content.innerHTML = content;
+        if ( typeof content === 'object') {
+            if ( !(
+                    (window.HTMLElement && content instanceof window.HTMLElement) ||
+                    (window.CharacterData && content instanceof window.CharacterData) ||
+                    (window.Element && content instanceof window.Element) ||
+                    (window.EventTarget && content instanceof window.EventTarget)
+                ) )
+                throw new Error("content must be a DOM object or string: " + content);
+            this._target.content.innerHTML = "";
+            this._target.content.appendChild(content);
+        }
+        else
+            this._target.content.innerHTML = content;
     }
 
 
@@ -628,7 +640,6 @@ DOMRenderer.prototype.setContent = function setContent(content) {
         this._target.explicitHeight ? false : this._target.size[1]
     );
 };
-
 
 /**
  * Sets the passed in transform matrix (world space). Inverts the parent's world
@@ -642,7 +653,32 @@ DOMRenderer.prototype.setContent = function setContent(content) {
  */
 DOMRenderer.prototype.setMatrix = function setMatrix (transform) {
     this._assertTargetLoaded();
-    this._target.element.style[TRANSFORM] = this._stringifyMatrix(transform);
+
+    // round to two decimal places (ie, 10*10 <=> 10^2 => 2 d.p)
+    transform[0] = Math.floor((transform[0] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[1] = Math.floor((transform[1] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[2] = Math.floor((transform[2] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[3] = Math.floor((transform[3] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[4] = Math.floor((transform[4] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[5] = Math.floor((transform[5] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[6] = Math.floor((transform[6] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[7] = Math.floor((transform[7] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[8] = Math.floor((transform[8] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[9] = Math.floor((transform[9] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[10] = Math.floor((transform[10] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[11] = Math.floor((transform[11] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[12] = Math.floor((transform[12] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[13] = Math.floor((transform[13] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[14] = Math.floor((transform[14] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[15] = Math.floor((transform[15] * (10 * 10) + 0.5)) / (10 * 10);
+
+    var sNewTransform = this._stringifyMatrix(transform);
+
+    if ( this._target.lastTransform != sNewTransform )
+    {
+        this._target.element.style[TRANSFORM] = sNewTransform;
+        this._target.lastTransform = sNewTransform;
+    }
 };
 
 

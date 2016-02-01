@@ -38,5 +38,6 @@ module.exports = {
     Size: require('./Size'),
     SizeSystem: require('./SizeSystem'),
     Transform: require('./Transform'),
-    TransformSystem: require('./TransformSystem')
+    TransformSystem: require('./TransformSystem'),
+    OpacitySystem: require('./OpacitySystem')
 };
