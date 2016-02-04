@@ -112,14 +112,17 @@ Opacity.prototype.getOpacity = function getOpacity () {
 
 Opacity.prototype._refresh = function _refresh(opacity)
 {
-	this.refresh = true;
-
-	// Tell all it's children.
-	for (var i = 0, len = this.childs.length ; i < len ; i++)
+	if (!this.refresh)
 	{
-		if (!this.childs[i].refresh)
+		this.refresh = true;
+
+		// Tell all it's children.
+		for (var i = 0, len = this.childs.length ; i < len ; i++)
 		{
-			this.childs[i]._refresh();
+			if (!this.childs[i].refresh)
+			{
+				this.childs[i]._refresh();
+			}
 		}
 	}
 }
