@@ -158,13 +158,26 @@ Dispatch.prototype.dismount = function dismount (path) {
     if (node.isMounted()) {
         if (node.onDismount) node.onDismount(path);
 
-        for (i = 0, len = children.length ; i < len ; i++)
-            if (children[i] && children[i].dismount) children[i].dismount();
-            else if (children[i]) this.dismount(path + '/' + i);
+    	// NOTE! Traverse the list backwards as the child will be removed from the list and the list is shrunk in the back per dismount. This avoids a bug where only half the elements would get removed!
+        for (i = children.length - 1 ; i >= 0 ; i--)
+        {
+        	if (children[i] && children[i].dismount)
+        	{
+        		children[i].dismount();
+        	}
+        	else if (children[i])
+        	{
+        		this.dismount(path + '/' + i);
+        	}
+        }
 
         for (i = 0, len = components.length ; i < len ; i++)
-            if (components[i] && components[i].onDismount)
-                components[i].onDismount();
+        {
+        	if (components[i] && components[i].onDismount)
+        	{
+        		components[i].onDismount();
+        	}
+        }
 
         node._setMounted(false);
         node._setParent(null);
