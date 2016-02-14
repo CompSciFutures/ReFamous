@@ -118,7 +118,7 @@ Transform.prototype.getParent = function getParent () {
  */
 Transform.prototype.setBreakPoint = function setBreakPoint () {
     this.breakPoint = true;
-    this.calculatingWorldMatrix = true;
+//    this.calculatingWorldMatrix = true;  // NOTE: COMMENTED OUT AS IT HAD NO EFFECT IN MY USAGE OF THE ENGINE. THIS AVOIDS US RECALCULATING ALL WORLD MATRIX EVERY FRAME!
 };
 
 /**
