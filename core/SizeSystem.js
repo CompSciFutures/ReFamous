@@ -99,7 +99,10 @@ SizeSystem.prototype.get = function get (path) {
  *
  * @return {undefined} undefined
  */
-SizeSystem.prototype.update = function update () {
+SizeSystem.prototype.update = function update()
+{
+	if (stats) stats.ProfileStart("ssUp")
+
     var sizes = this.pathStore.getItems();
     var paths = this.pathStore.getPaths();
     var node;
@@ -108,18 +111,28 @@ SizeSystem.prototype.update = function update () {
     var len;
     var components;
 
-    for (i = 0, len = sizes.length ; i < len ; i++) {
-        node = Dispatch.getNode(paths[i]);
-        components = node.getComponents();
-        if (!node) continue;
-        size = sizes[i];
-        if (size.sizeModeChanged) sizeModeChanged(node, components, size);
-        if (size.absoluteSizeChanged) absoluteSizeChanged(node, components, size);
-        if (size.proportionalSizeChanged) proportionalSizeChanged(node, components, size);
-        if (size.differentialSizeChanged) differentialSizeChanged(node, components, size);
-        if (size.renderSizeChanged) renderSizeChanged(node, components, size);
-        if (size.fromComponents(components)) sizeChanged(node, components, size);
+    for (i = 0, len = sizes.length ; i < len ; i++)
+    {
+    	size = sizes[i];
+    	if (size.refresh)
+		{
+    		size.refresh = false;
+
+    		node = Dispatch.getNode(paths[i]);
+    		if (node)
+    		{
+    			components = node.getComponents();
+    			if (size.sizeModeChanged) sizeModeChanged(node, components, size);
+    			if (size.absoluteSizeChanged) absoluteSizeChanged(node, components, size);
+    			if (size.proportionalSizeChanged) proportionalSizeChanged(node, components, size);
+    			if (size.differentialSizeChanged) differentialSizeChanged(node, components, size);
+    			if (size.renderSizeChanged) renderSizeChanged(node, components, size);
+    			if (size.fromComponents(components)) sizeChanged(node, components, size);
+    		}
+    	}
     }
+
+    if (stats) stats.ProfileEnd("ssUp")
 };
 
 // private methods
