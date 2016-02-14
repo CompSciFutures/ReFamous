@@ -35,30 +35,34 @@ var ONES = [1, 1, 1];
  *
  * @param {Transform} parent the parent Transform
  */
-function Transform (parent) {
-    this.local = new Float32Array(Transform.IDENT);
-    this.global = new Float32Array(Transform.IDENT);
-    this.offsets = {
-        align: new Float32Array(3),
-        alignChanged: false,
-        mountPoint: new Float32Array(3),
-        mountPointChanged: false,
-        origin: new Float32Array(3),
-        originChanged: false
-    };
-    this.vectors = {
-        position: new Float32Array(3),
-        positionChanged: false,
-        rotation: new Float32Array(QUAT),
-        rotationChanged: false,
-        scale: new Float32Array(ONES),
-        scaleChanged: false
-    };
-    this._lastEulerVals = [0, 0, 0];
-    this._lastEuler = false;
-    this.parent = parent ? parent : null;
-    this.breakPoint = false;
-    this.calculatingWorldMatrix = false;
+function Transform(parent)
+{
+	this.local = new Float32Array(Transform.IDENT);
+	this.global = new Float32Array(Transform.IDENT);
+	this.offsets = {
+		align: new Float32Array(3),
+		alignChanged: false,
+		mountPoint: new Float32Array(3),
+		mountPointChanged: false,
+		origin: new Float32Array(3),
+		originChanged: false
+	};
+	this.vectors = {
+		position: new Float32Array(3),
+		positionChanged: false,
+		rotation: new Float32Array(QUAT),
+		rotationChanged: false,
+		scale: new Float32Array(ONES),
+		scaleChanged: false
+	};
+	this._lastEulerVals = [0, 0, 0];
+	this._lastEuler = false;
+	this.parent = parent ? parent : null;
+	this.breakPoint = false;
+	this.calculatingWorldMatrix = false;
+
+	this.refresh = false; // The idea is that this changes to true if anything in the component needs to update. This allows us to early out in the update loop instead of trashng cache to check each sub objects changed state.
+	this.childs = [];
 }
 
 Transform.IDENT = [ 1, 0, 0, 0,
@@ -92,9 +96,44 @@ Transform.prototype.reset = function reset () {
  *
  * @return {undefined} undefined
  */
-Transform.prototype.setParent = function setParent (parent) {
-    this.parent = parent;
+Transform.prototype.setParent = function setParent(parent)
+{
+	if (this.parent)
+	{
+		// Remove as child.
+		var index = this.parent.childs.indexOf(this, 0);
+		if (index != undefined)
+		{
+			this.parent.childs.splice(index, 1);
+		}
+	}
+
+	this.parent = parent;
+
+	if (parent)
+	{
+		parent.childs.push(this);
+		this._refresh();
+	}
 };
+
+Transform.prototype._refresh = function _refresh()
+{
+	// Refresh all if needed.
+	if (!this.refresh)
+	{
+		this.refresh = true;
+
+		// Tell all it's children.
+		for (var i = 0, len = this.childs.length ; i < len ; i++)
+		{
+			if (!this.childs[i].refresh)
+			{
+				this.childs[i]._refresh();
+			}
+		}
+	}
+}
 
 /**
  * returns the parent of this transform
@@ -253,7 +292,12 @@ Transform.prototype.getPosition = function getPosition () {
  * @return {undefined} undefined
  */
 Transform.prototype.setPosition = function setPosition (x, y, z) {
-    this.vectors.positionChanged = setVec(this.vectors.position, x, y, z);
+    var ch = setVec(this.vectors.position, x, y, z);
+    this.vectors.positionChanged = ch;
+    if (ch)
+    {
+    	this._refresh();
+    }
 };
 
 /**
@@ -344,7 +388,12 @@ Transform.prototype.setRotation = function setRotation (x, y, z, w) {
         this._lastEulerVals[2] = z;
     }
 
-    this.vectors.rotationChanged = setVec(quat, qx, qy, qz, qw);
+    var ch = setVec(quat, qx, qy, qz, qw);
+    this.vectors.rotationChanged = ch;
+    if (ch)
+    {
+    	this._refresh();
+    }
 };
 
 /**
@@ -370,7 +419,12 @@ Transform.prototype.getScale = function getScale () {
  * @return {undefined} undefined
  */
 Transform.prototype.setScale = function setScale (x, y, z) {
-    this.vectors.scaleChanged = setVec(this.vectors.scale, x, y, z);
+	var ch = setVec(this.vectors.scale, x, y, z);
+	this.vectors.scaleChanged = ch;
+	if (ch)
+	{
+		this._refresh();
+	}
 };
 
 /**
@@ -396,7 +450,12 @@ Transform.prototype.getAlign = function getAlign () {
  * @return {undefined} undefined
  */
 Transform.prototype.setAlign = function setAlign (x, y, z) {
-    this.offsets.alignChanged = setVec(this.offsets.align, x, y, z != null ? z - 0.5 : z);
+	var ch = setVec(this.offsets.align, x, y, z != null ? z - 0.5 : z);
+	this.offsets.alignChanged = ch;
+	if (ch)
+	{
+		this._refresh();
+	}
 };
 
 /**
@@ -422,7 +481,12 @@ Transform.prototype.getMountPoint = function getMountPoint () {
  * @return {undefined} undefined
  */
 Transform.prototype.setMountPoint = function setMountPoint (x, y, z) {
-    this.offsets.mountPointChanged = setVec(this.offsets.mountPoint, x, y, z != null ? z - 0.5 : z);
+    var ch = setVec(this.offsets.mountPoint, x, y, z != null ? z - 0.5 : z);
+    this.offsets.mountPointChanged = ch;
+    if (ch)
+    {
+    	this._refresh();
+    }
 };
 
 /**
@@ -448,7 +512,12 @@ Transform.prototype.getOrigin = function getOrigin () {
  * @return {undefined} undefined
  */
 Transform.prototype.setOrigin = function setOrigin (x, y, z) {
-    this.offsets.originChanged = setVec(this.offsets.origin, x, y, z != null ? z - 0.5 : z);
+    var ch = setVec(this.offsets.origin, x, y, z != null ? z - 0.5 : z);
+    this.offsets.originChanged = ch;
+    if (ch)
+    {
+    	this._refresh();
+    }
 };
 
 /**
@@ -780,6 +849,15 @@ function multiply (out, a, b) {
 
     return changed;
 }
+
+function nearlyEqual(a, b)
+{
+	var diff = Math.abs(a - b);
+
+	// Note: Should be good enough for the needs here.
+	return diff < 0.01;
+}
+
 
 function nearlyEqual(a, b)
 {
