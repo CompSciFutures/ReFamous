@@ -484,8 +484,12 @@ function glBufferData (context, path, commands, iterator) {
 }
 
 function glCutoutState (context, path, commands, iterator) {
-    if (!context._webGLRenderer) context._initWebGLRenderer();
-    context._webGLRenderer.setCutoutState(path, commands[++iterator]);
+    var state = commands[++iterator];
+    if (!context._webGLRenderer && state) context._initWebGLRenderer();
+    if (context._webGLRenderer)
+    {
+        context._webGLRenderer.setCutoutState(path, state);
+    }
     return iterator;
 }
 
