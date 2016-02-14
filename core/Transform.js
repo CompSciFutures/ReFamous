@@ -703,8 +703,7 @@ function fromNodeWithParent (node, transform) {
  * @param {Array} a the left hand transform
  * @param {Array} b the right hand transform
  *
- * @return {undefined} undefined
- */
+ * @return {undefined} undefined */
 function multiply (out, a, b) {
     var a00 = a[0], a01 = a[1], a02 = a[2],
         a10 = a[4], a11 = a[5], a12 = a[6],
@@ -717,69 +716,77 @@ function multiply (out, a, b) {
     // Cache only the current line of the second matrix
     var b0  = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
 
-    res = b0*a00 + b1*a10 + b2*a20 + b3*a30;
-    changed = changed ? changed : out[0] === res;
+    res = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+    changed = changed ? changed : (out[0] !== res && !nearlyEqual(out[0], res));
     out[0] = res;
 
-    res = b0*a01 + b1*a11 + b2*a21 + b3*a31;
-    changed = changed ? changed : out[1] === res;
+    res = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+    changed = changed ? changed : (out[1] !== res && !nearlyEqual(out[1], res));
     out[1] = res;
 
-    res = b0*a02 + b1*a12 + b2*a22 + b3*a32;
-    changed = changed ? changed : out[2] === res;
+    res = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+    changed = changed ? changed : (out[2] !== res && !nearlyEqual(out[2], res));
     out[2] = res;
 
     out[3] = 0;
 
     b0 = b[4]; b1 = b[5]; b2 = b[6]; b3 = b[7];
 
-    res = b0*a00 + b1*a10 + b2*a20 + b3*a30;
-    changed = changed ? changed : out[4] === res;
+    res = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+    changed = changed ? changed : (out[4] !== res && !nearlyEqual(out[4], res));
     out[4] = res;
 
-    res = b0*a01 + b1*a11 + b2*a21 + b3*a31;
-    changed = changed ? changed : out[5] === res;
+    res = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+    changed = changed ? changed : (out[5] !== res && !nearlyEqual(out[5], res));
     out[5] = res;
 
-    res = b0*a02 + b1*a12 + b2*a22 + b3*a32;
-    changed = changed ? changed : out[6] === res;
+    res = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+    changed = changed ? changed : (out[6] !== res && !nearlyEqual(out[6], res));
     out[6] = res;
 
     out[7] = 0;
 
     b0 = b[8]; b1 = b[9]; b2 = b[10]; b3 = b[11];
 
-    res = b0*a00 + b1*a10 + b2*a20 + b3*a30;
-    changed = changed ? changed : out[8] === res;
+    res = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+    changed = changed ? changed : (out[8] !== res && !nearlyEqual(out[8], res));
     out[8] = res;
 
-    res = b0*a01 + b1*a11 + b2*a21 + b3*a31;
-    changed = changed ? changed : out[9] === res;
+    res = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+    changed = changed ? changed : (out[9] !== res && !nearlyEqual(out[9], res));
     out[9] = res;
 
-    res = b0*a02 + b1*a12 + b2*a22 + b3*a32;
-    changed = changed ? changed : out[10] === res;
+    res = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+    changed = changed ? changed : (out[10] !== res && !nearlyEqual(out[10], res));
     out[10] = res;
 
     out[11] = 0;
 
     b0 = b[12]; b1 = b[13]; b2 = b[14]; b3 = b[15];
 
-    res = b0*a00 + b1*a10 + b2*a20 + b3*a30;
-    changed = changed ? changed : out[12] === res;
+    res = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+    changed = changed ? changed : (out[12] !== res && !nearlyEqual(out[12], res));
     out[12] = res;
 
-    res = b0*a01 + b1*a11 + b2*a21 + b3*a31;
-    changed = changed ? changed : out[13] === res;
+    res = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+    changed = changed ? changed : (out[13] !== res && !nearlyEqual(out[13], res));
     out[13] = res;
 
-    res = b0*a02 + b1*a12 + b2*a22 + b3*a32;
-    changed = changed ? changed : out[14] === res;
+    res = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+    changed = changed ? changed : (out[14] !== res && !nearlyEqual(out[14], res));
     out[14] = res;
 
     out[15] = 1;
 
     return changed;
+}
+
+function nearlyEqual(a, b)
+{
+    var diff = Math.abs(a - b);
+
+    // Note: Should be good enough for the needs here.
+    return diff < 0.01;
 }
 
 module.exports = Transform;
