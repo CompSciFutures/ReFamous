@@ -25,6 +25,7 @@
 'use strict';
 
 var polyfills = require('../polyfills');
+var FPSCounter = require("./FPSCounter");
 var rAF = polyfills.requestAnimationFrame;
 var cAF = polyfills.cancelAnimationFrame;
 
@@ -81,6 +82,7 @@ function RequestAnimationFrameLoop() {
     this._time = 0;
     this._stoppedAt = 0;
     this._sleep = 0;
+    this._FPSCounter = FPSCounter;
 
     // Indicates whether the engine should be restarted when the tab/ window is
     // being focused again (visibility change).
@@ -263,7 +265,11 @@ RequestAnimationFrameLoop.prototype.step = function step (time) {
  * @return {RequestAnimationFrameLoop} this
  */
 RequestAnimationFrameLoop.prototype.loop = function loop(time) {
-    this.step(time);
+    if ( FPSCounter.isReadyForUpdate() ) {
+        FPSCounter.tickStarted();
+        this.step(time);
+        FPSCounter.tickFinished();
+    }
     this._rAF = rAF(this._looper);
     return this;
 };
