@@ -641,9 +641,6 @@ DOMRenderer.prototype.setContent = function setContent(content) {
     );
 };
 
-var a = (10 * 10) + 0.5;
-var b = 10 * 10;
-
 /**
  * Sets the passed in transform matrix (world space). Inverts the parent's world
  * transform.
@@ -658,22 +655,22 @@ DOMRenderer.prototype.setMatrix = function setMatrix (transform) {
     this._assertTargetLoaded();
 
     // round to two decimal places (ie, 10*10 <=> 10^2 => 2 d.p)
-    transform[0] = Math.floor(transform[0] * a) / b;
-    transform[1] = Math.floor(transform[1] * a) / b;
-    transform[2] = Math.floor(transform[2] * a) / b;
-    transform[3] = Math.floor(transform[3] * a) / b;
-    transform[4] = Math.floor(transform[4] * a) / b;
-    transform[5] = Math.floor(transform[5] * a) / b;
-    transform[6] = Math.floor(transform[6] * a) / b;
-    transform[7] = Math.floor(transform[7] * a) / b;
-    transform[8] = Math.floor(transform[8] * a) / b;
-    transform[9] = Math.floor(transform[9] * a) / b;
-    transform[10] = Math.floor(transform[10] * a) / b;
-    transform[11] = Math.floor(transform[11] * a) / b;
-    transform[12] = Math.floor(transform[12] * a) / b;
-    transform[13] = Math.floor(transform[13] * a) / b;
-    transform[14] = Math.floor(transform[14] * a) / b;
-    transform[15] = Math.floor(transform[15] * a) / b;
+    transform[0] = Math.floor((transform[0] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[1] = Math.floor((transform[1] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[2] = Math.floor((transform[2] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[3] = Math.floor((transform[3] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[4] = Math.floor((transform[4] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[5] = Math.floor((transform[5] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[6] = Math.floor((transform[6] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[7] = Math.floor((transform[7] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[8] = Math.floor((transform[8] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[9] = Math.floor((transform[9] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[10] = Math.floor((transform[10] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[11] = Math.floor((transform[11] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[12] = Math.floor((transform[12] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[13] = Math.floor((transform[13] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[14] = Math.floor((transform[14] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[15] = Math.floor((transform[15] * (10 * 10) + 0.5)) / (10 * 10);
 
     var sNewTransform = this._stringifyMatrix(transform);
 
