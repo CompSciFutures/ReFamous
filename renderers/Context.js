@@ -52,6 +52,7 @@ function Context(selector, compositor) {
     this._compositor = compositor;
     this._rootEl = document.querySelector(selector);
     this._selector = selector;
+    this._mixed_mode_enabled = true;
 
     if (this._rootEl === null) {
         throw new Error(
@@ -126,8 +127,7 @@ Context.prototype.updateSize = function () {
  */
 Context.prototype.draw = function draw() {
     this._domRenderer.draw(this._renderState);
-    if (this._webGLRenderer) this._webGLRenderer.draw(this._renderState);
-
+    if (this._webGLRenderer && this._compositor._mixed_mode_enabled) this._webGLRenderer.draw(this._renderState);
     if (this._renderState.perspectiveDirty) this._renderState.perspectiveDirty = false;
     if (this._renderState.viewDirty) this._renderState.viewDirty = false;
 };
@@ -339,7 +339,7 @@ function changeTransform (context, path, commands, iterator) {
 
     context._domRenderer.setMatrix(temp);
 
-    if (context._webGLRenderer)
+    if (context._webGLRenderer && this._compositor._mixed_mode_enabled)
         context._webGLRenderer.setCutoutUniform(path, 'u_transform', temp);
 
     return iterator;

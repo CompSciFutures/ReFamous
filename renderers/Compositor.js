@@ -47,7 +47,7 @@ function Compositor() {
     this._outCommands = [];
     this._inCommands = [];
     this._time = null;
-
+    this._mixed_mode_enabled = true;
     this._resized = false;
 
     var _this = this;
@@ -61,6 +61,17 @@ Compositor.prototype.onResize = function onResize () {
     for (var selector in this._contexts) {
         this._contexts[selector].updateSize();
     }
+};
+
+/**
+ * Famous' mixed mode tends to overheat the GPU sometimes. To disable mixed mode manually:
+ *
+ *  require("famous").core.FamousEngine.compositor.setMixedModeEnabled(false)
+ *
+ * @param bEnabled {Boolean} true = enable mixed mode, false = turn it off
+ */
+Compositor.prototype.setMixedModeEnabled = function(bEnabled) {
+    this._mixed_mode_enabled = bEnabled ? true : false;
 };
 
 /**
