@@ -31,8 +31,6 @@ function Opacity (parent) {
     this.parent = parent ? parent : null;
     this.breakPoint = false;
     this.calculatingWorldOpacity = false;
-    this.refresh = false;
-    this.childs = [];
 }
 
 Opacity.WORLD_CHANGED = 1;
@@ -43,26 +41,8 @@ Opacity.prototype.reset = function reset () {
     this.breakPoint = false;
 };
 
-Opacity.prototype.setParent = function setParent(parent)
-{
-	if (this.parent)
-	{
-		// Remove as child.
-		var index = this.parent.childs.indexOf(this, 0);
-		if (index != undefined)
-		{
-			this.parent.childs.splice(index, 1);
-		}
-	}
-
-	this.parent = parent;
-
-	if (parent)
-	{
-		parent.childs.push(this);
-		this._refresh();
-	}
-
+Opacity.prototype.setParent = function setParent (parent) {
+    this.parent = parent;
 };
 
 Opacity.prototype.getParent = function getParent () {
@@ -72,7 +52,6 @@ Opacity.prototype.getParent = function getParent () {
 Opacity.prototype.setBreakPoint = function setBreakPoint () {
     this.breakPoint = true;
     this.calculatingWorldOpacity = true;
-    this._refresh();
 };
 
 /**
@@ -110,32 +89,8 @@ Opacity.prototype.getOpacity = function getOpacity () {
     return this.opacity;
 };
 
-Opacity.prototype._refresh = function _refresh(opacity)
-{
-	if (!this.refresh)
-	{
-		this.refresh = true;
-
-		// Tell all it's children.
-		for (var i = 0, len = this.childs.length ; i < len ; i++)
-		{
-			if (!this.childs[i].refresh)
-			{
-				this.childs[i]._refresh();
-			}
-		}
-	}
-}
-
 Opacity.prototype.setOpacity = function setOpacity (opacity) {
-	var changed = this.opacity !== opacity;
-	this.opacity = opacity;
-
-	if (changed)
-	{
-		this._refresh();
-	}
-
+    this.opacity = opacity;
 };
 
 Opacity.prototype.calculateWorldOpacity = function calculateWorldOpacity () {

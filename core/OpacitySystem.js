@@ -71,11 +71,7 @@ OpacitySystem.prototype.registerOpacityAtPath = function registerOpacityAtPath (
  *
  * @param {String} path at which to register the opacity
  */
-OpacitySystem.prototype.deregisterOpacityAtPath = function deregisterOpacityAtPath(path)
-{
-	var op = this.pathStore.get(path);
-	op.setParent(null);
-
+OpacitySystem.prototype.deregisterOpacityAtPath = function deregisterOpacityAtPath (path) {
     this.pathStore.remove(path);
 };
 
@@ -144,25 +140,17 @@ OpacitySystem.prototype.update = function update () {
     var node;
     var components;
 
-    for (var i = 0, len = opacities.length ; i < len ; i++)
-    {
-    	opacity = opacities[i];
-    	if (opacity.refresh)
-    	{
-    		opacity.refresh = false;
+    for (var i = 0, len = opacities.length ; i < len ; i++) {
+        node = Dispatch.getNode(paths[i]);
+        if (!node) continue;
+        components = node.getComponents();
+        opacity = opacities[i];
 
-    		node = Dispatch.getNode(paths[i]);
-    		if (node)
-    		{
-    			if ((changed = opacity.calculate()))
-    			{
-    				components = node.getComponents();
-    				opacityChanged(node, components, opacity);
-    				if (changed & Opacity.LOCAL_CHANGED) localOpacityChanged(node, components, opacity.getLocalOpacity());
-    				if (changed & Opacity.WORLD_CHANGED) worldOpacityChanged(node, components, opacity.getWorldOpacity());
-    			}
-    		}
-    	}
+        if ((changed = opacity.calculate())) {
+            opacityChanged(node, components, opacity);
+            if (changed & Opacity.LOCAL_CHANGED) localOpacityChanged(node, components, opacity.getLocalOpacity());
+            if (changed & Opacity.WORLD_CHANGED) worldOpacityChanged(node, components, opacity.getWorldOpacity());
+        }
     }
 };
 

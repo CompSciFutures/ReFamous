@@ -35,34 +35,30 @@ var ONES = [1, 1, 1];
  *
  * @param {Transform} parent the parent Transform
  */
-function Transform(parent)
-{
-	this.local = new Float32Array(Transform.IDENT);
-	this.global = new Float32Array(Transform.IDENT);
-	this.offsets = {
-		align: new Float32Array(3),
-		alignChanged: false,
-		mountPoint: new Float32Array(3),
-		mountPointChanged: false,
-		origin: new Float32Array(3),
-		originChanged: false
-	};
-	this.vectors = {
-		position: new Float32Array(3),
-		positionChanged: false,
-		rotation: new Float32Array(QUAT),
-		rotationChanged: false,
-		scale: new Float32Array(ONES),
-		scaleChanged: false
-	};
-	this._lastEulerVals = [0, 0, 0];
-	this._lastEuler = false;
-	this.parent = parent ? parent : null;
-	this.breakPoint = false;
-	this.calculatingWorldMatrix = false;
-
-	this.refresh = false; // The idea is that this changes to true if anything in the component needs to update. This allows us to early out in the update loop instead of trashng cache to check each sub objects changed state.
-	this.childs = [];
+function Transform (parent) {
+    this.local = new Float32Array(Transform.IDENT);
+    this.global = new Float32Array(Transform.IDENT);
+    this.offsets = {
+        align: new Float32Array(3),
+        alignChanged: false,
+        mountPoint: new Float32Array(3),
+        mountPointChanged: false,
+        origin: new Float32Array(3),
+        originChanged: false
+    };
+    this.vectors = {
+        position: new Float32Array(3),
+        positionChanged: false,
+        rotation: new Float32Array(QUAT),
+        rotationChanged: false,
+        scale: new Float32Array(ONES),
+        scaleChanged: false
+    };
+    this._lastEulerVals = [0, 0, 0];
+    this._lastEuler = false;
+    this.parent = parent ? parent : null;
+    this.breakPoint = false;
+    this.calculatingWorldMatrix = false;
 }
 
 Transform.IDENT = [ 1, 0, 0, 0,
@@ -96,44 +92,9 @@ Transform.prototype.reset = function reset () {
  *
  * @return {undefined} undefined
  */
-Transform.prototype.setParent = function setParent(parent)
-{
-	if (this.parent)
-	{
-		// Remove as child.
-		var index = this.parent.childs.indexOf(this, 0);
-		if (index != undefined)
-		{
-			this.parent.childs.splice(index, 1);
-		}
-	}
-
-	this.parent = parent;
-
-	if (parent)
-	{
-		parent.childs.push(this);
-		this._refresh();
-	}
+Transform.prototype.setParent = function setParent (parent) {
+    this.parent = parent;
 };
-
-Transform.prototype._refresh = function _refresh()
-{
-	// Refresh all if needed.
-	if (!this.refresh)
-	{
-		this.refresh = true;
-
-		// Tell all it's children.
-		for (var i = 0, len = this.childs.length ; i < len ; i++)
-		{
-			if (!this.childs[i].refresh)
-			{
-				this.childs[i]._refresh();
-			}
-		}
-	}
-}
 
 /**
  * returns the parent of this transform
@@ -157,7 +118,7 @@ Transform.prototype.getParent = function getParent () {
  */
 Transform.prototype.setBreakPoint = function setBreakPoint () {
     this.breakPoint = true;
-//    this.calculatingWorldMatrix = true;  // NOTE: COMMENTED OUT AS IT HAD NO EFFECT IN MY USAGE OF THE ENGINE. THIS AVOIDS US RECALCULATING ALL WORLD MATRIX EVERY FRAME!
+    this.calculatingWorldMatrix = true;
 };
 
 /**
@@ -292,12 +253,7 @@ Transform.prototype.getPosition = function getPosition () {
  * @return {undefined} undefined
  */
 Transform.prototype.setPosition = function setPosition (x, y, z) {
-    var ch = setVec(this.vectors.position, x, y, z);
-    this.vectors.positionChanged = ch;
-    if (ch)
-    {
-    	this._refresh();
-    }
+    this.vectors.positionChanged = setVec(this.vectors.position, x, y, z);
 };
 
 /**
@@ -388,12 +344,7 @@ Transform.prototype.setRotation = function setRotation (x, y, z, w) {
         this._lastEulerVals[2] = z;
     }
 
-    var ch = setVec(quat, qx, qy, qz, qw);
-    this.vectors.rotationChanged = ch;
-    if (ch)
-    {
-    	this._refresh();
-    }
+    this.vectors.rotationChanged = setVec(quat, qx, qy, qz, qw);
 };
 
 /**
@@ -419,12 +370,7 @@ Transform.prototype.getScale = function getScale () {
  * @return {undefined} undefined
  */
 Transform.prototype.setScale = function setScale (x, y, z) {
-	var ch = setVec(this.vectors.scale, x, y, z);
-	this.vectors.scaleChanged = ch;
-	if (ch)
-	{
-		this._refresh();
-	}
+    this.vectors.scaleChanged = setVec(this.vectors.scale, x, y, z);
 };
 
 /**
@@ -450,12 +396,7 @@ Transform.prototype.getAlign = function getAlign () {
  * @return {undefined} undefined
  */
 Transform.prototype.setAlign = function setAlign (x, y, z) {
-	var ch = setVec(this.offsets.align, x, y, z != null ? z - 0.5 : z);
-	this.offsets.alignChanged = ch;
-	if (ch)
-	{
-		this._refresh();
-	}
+    this.offsets.alignChanged = setVec(this.offsets.align, x, y, z != null ? z - 0.5 : z);
 };
 
 /**
@@ -481,12 +422,7 @@ Transform.prototype.getMountPoint = function getMountPoint () {
  * @return {undefined} undefined
  */
 Transform.prototype.setMountPoint = function setMountPoint (x, y, z) {
-    var ch = setVec(this.offsets.mountPoint, x, y, z != null ? z - 0.5 : z);
-    this.offsets.mountPointChanged = ch;
-    if (ch)
-    {
-    	this._refresh();
-    }
+    this.offsets.mountPointChanged = setVec(this.offsets.mountPoint, x, y, z != null ? z - 0.5 : z);
 };
 
 /**
@@ -512,12 +448,7 @@ Transform.prototype.getOrigin = function getOrigin () {
  * @return {undefined} undefined
  */
 Transform.prototype.setOrigin = function setOrigin (x, y, z) {
-    var ch = setVec(this.offsets.origin, x, y, z != null ? z - 0.5 : z);
-    this.offsets.originChanged = ch;
-    if (ch)
-    {
-    	this._refresh();
-    }
+    this.offsets.originChanged = setVec(this.offsets.origin, x, y, z != null ? z - 0.5 : z);
 };
 
 /**
@@ -772,7 +703,8 @@ function fromNodeWithParent (node, transform) {
  * @param {Array} a the left hand transform
  * @param {Array} b the right hand transform
  *
- * @return {undefined} undefined */
+ * @return {undefined} undefined
+ */
 function multiply (out, a, b) {
     var a00 = a[0], a01 = a[1], a02 = a[2],
         a10 = a[4], a11 = a[5], a12 = a[6],
@@ -785,86 +717,69 @@ function multiply (out, a, b) {
     // Cache only the current line of the second matrix
     var b0  = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
 
-    res = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-    changed = changed ? changed : (out[0] !== res && !nearlyEqual(out[0], res));
+    res = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    changed = changed ? changed : out[0] === res;
     out[0] = res;
 
-    res = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-    changed = changed ? changed : (out[1] !== res && !nearlyEqual(out[1], res));
+    res = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    changed = changed ? changed : out[1] === res;
     out[1] = res;
 
-    res = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-    changed = changed ? changed : (out[2] !== res && !nearlyEqual(out[2], res));
+    res = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    changed = changed ? changed : out[2] === res;
     out[2] = res;
 
     out[3] = 0;
 
     b0 = b[4]; b1 = b[5]; b2 = b[6]; b3 = b[7];
 
-    res = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-    changed = changed ? changed : (out[4] !== res && !nearlyEqual(out[4], res));
+    res = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    changed = changed ? changed : out[4] === res;
     out[4] = res;
 
-    res = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-    changed = changed ? changed : (out[5] !== res && !nearlyEqual(out[5], res));
+    res = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    changed = changed ? changed : out[5] === res;
     out[5] = res;
 
-    res = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-    changed = changed ? changed : (out[6] !== res && !nearlyEqual(out[6], res));
+    res = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    changed = changed ? changed : out[6] === res;
     out[6] = res;
 
     out[7] = 0;
 
     b0 = b[8]; b1 = b[9]; b2 = b[10]; b3 = b[11];
 
-    res = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-    changed = changed ? changed : (out[8] !== res && !nearlyEqual(out[8], res));
+    res = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    changed = changed ? changed : out[8] === res;
     out[8] = res;
 
-    res = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-    changed = changed ? changed : (out[9] !== res && !nearlyEqual(out[9], res));
+    res = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    changed = changed ? changed : out[9] === res;
     out[9] = res;
 
-    res = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-    changed = changed ? changed : (out[10] !== res && !nearlyEqual(out[10], res));
+    res = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    changed = changed ? changed : out[10] === res;
     out[10] = res;
 
     out[11] = 0;
 
     b0 = b[12]; b1 = b[13]; b2 = b[14]; b3 = b[15];
 
-    res = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-    changed = changed ? changed : (out[12] !== res && !nearlyEqual(out[12], res));
+    res = b0*a00 + b1*a10 + b2*a20 + b3*a30;
+    changed = changed ? changed : out[12] === res;
     out[12] = res;
 
-    res = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-    changed = changed ? changed : (out[13] !== res && !nearlyEqual(out[13], res));
+    res = b0*a01 + b1*a11 + b2*a21 + b3*a31;
+    changed = changed ? changed : out[13] === res;
     out[13] = res;
 
-    res = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-    changed = changed ? changed : (out[14] !== res && !nearlyEqual(out[14], res));
+    res = b0*a02 + b1*a12 + b2*a22 + b3*a32;
+    changed = changed ? changed : out[14] === res;
     out[14] = res;
 
     out[15] = 1;
 
     return changed;
-}
-
-function nearlyEqual(a, b)
-{
-	var diff = Math.abs(a - b);
-
-	// Note: Should be good enough for the needs here.
-	return diff < 0.01;
-}
-
-
-function nearlyEqual(a, b)
-{
-    var diff = Math.abs(a - b);
-
-    // Note: Should be good enough for the needs here.
-    return diff < 0.01;
 }
 
 module.exports = Transform;
