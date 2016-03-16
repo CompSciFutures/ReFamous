@@ -145,8 +145,6 @@ TransformSystem.prototype.get = function get (path) {
 	*/
 TransformSystem.prototype.update = function update()
 {
-	if (stats) stats.ProfileStart("trUp")
-
 	var transforms = this.pathStore.getItems();
 	var paths = this.pathStore.getPaths();
 	var transform;
@@ -183,8 +181,6 @@ TransformSystem.prototype.update = function update()
 			}
 		}
 	}
-
-	if(stats) stats.ProfileEnd("trUp")
 };
 
 // private methods
