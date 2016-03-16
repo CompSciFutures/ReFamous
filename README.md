@@ -17,6 +17,34 @@ Out of respect for the tremendous amount of work the extremely generous Famous t
 
 Thus it will be a stabilization of the latest dev build and nothing more.
 
+
+### Disabling Mixed Mode in (Re)Famous
+
+You probably don't want mixed mode - the current implementation can cause GPUs to overheat. To disable:
+
+```js
+var famous = require("refamous");
+famous.core.FamousEngine.compositor.setMixedModeEnabled(false);
+```
+
+### Changing the frame rate in (Re)Famous
+
+(Re)Famous drops the target FPS from 60 down to 15, which is probably sufficient for what you need. To change the FPS rate to 30:
+
+```js
+var famous = require("refamous");
+famous.core.FamousEngine.renderLoop._FPSCounter.setTargetFPS(30.0);
+```
+
+And to find out the current FPS, MSPF & CPU usage:
+
+```js
+var famous = require("refamous");
+famous.core.FamousEngine.renderLoop._FPSCounter.logFPSToConsole();
+```
+
+Note that (Re)Famous will start logging warnings to the console if the frame rate drops below 10 FPS or if the render loop's CPU usage goes above 10%.
+
 ## Getting Started    
 
 We have several [guides & tutorials on our site](http://famous.org/learn/) to help you get up and running with Famous, such as [Hello Famous](http://famous.org/learn/hello-famous.html).
