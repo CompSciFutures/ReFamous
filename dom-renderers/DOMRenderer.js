@@ -641,6 +641,9 @@ DOMRenderer.prototype.setContent = function setContent(content) {
     );
 };
 
+var a = (10 * 10) + 0.5;
+var b = 10 * 10;
+
 /**
  * Sets the passed in transform matrix (world space). Inverts the parent's world
  * transform.
@@ -655,22 +658,22 @@ DOMRenderer.prototype.setMatrix = function setMatrix (transform) {
     this._assertTargetLoaded();
 
     // round to two decimal places (ie, 10*10 <=> 10^2 => 2 d.p)
-    transform[0] = Math.floor((transform[0] * (10 * 10) + 0.5)) / (10 * 10);
-    transform[1] = Math.floor((transform[1] * (10 * 10) + 0.5)) / (10 * 10);
-    transform[2] = Math.floor((transform[2] * (10 * 10) + 0.5)) / (10 * 10);
-    transform[3] = Math.floor((transform[3] * (10 * 10) + 0.5)) / (10 * 10);
-    transform[4] = Math.floor((transform[4] * (10 * 10) + 0.5)) / (10 * 10);
-    transform[5] = Math.floor((transform[5] * (10 * 10) + 0.5)) / (10 * 10);
-    transform[6] = Math.floor((transform[6] * (10 * 10) + 0.5)) / (10 * 10);
-    transform[7] = Math.floor((transform[7] * (10 * 10) + 0.5)) / (10 * 10);
-    transform[8] = Math.floor((transform[8] * (10 * 10) + 0.5)) / (10 * 10);
-    transform[9] = Math.floor((transform[9] * (10 * 10) + 0.5)) / (10 * 10);
-    transform[10] = Math.floor((transform[10] * (10 * 10) + 0.5)) / (10 * 10);
-    transform[11] = Math.floor((transform[11] * (10 * 10) + 0.5)) / (10 * 10);
-    transform[12] = Math.floor((transform[12] * (10 * 10) + 0.5)) / (10 * 10);
-    transform[13] = Math.floor((transform[13] * (10 * 10) + 0.5)) / (10 * 10);
-    transform[14] = Math.floor((transform[14] * (10 * 10) + 0.5)) / (10 * 10);
-    transform[15] = Math.floor((transform[15] * (10 * 10) + 0.5)) / (10 * 10);
+    transform[0] = Math.floor(transform[0] * a) / b;
+    transform[1] = Math.floor(transform[1] * a) / b;
+    transform[2] = Math.floor(transform[2] * a) / b;
+    transform[3] = Math.floor(transform[3] * a) / b;
+    transform[4] = Math.floor(transform[4] * a) / b;
+    transform[5] = Math.floor(transform[5] * a) / b;
+    transform[6] = Math.floor(transform[6] * a) / b;
+    transform[7] = Math.floor(transform[7] * a) / b;
+    transform[8] = Math.floor(transform[8] * a) / b;
+    transform[9] = Math.floor(transform[9] * a) / b;
+    transform[10] = Math.floor(transform[10] * a) / b;
+    transform[11] = Math.floor(transform[11] * a) / b;
+    transform[12] = Math.floor(transform[12] * a) / b;
+    transform[13] = Math.floor(transform[13] * a) / b;
+    transform[14] = Math.floor(transform[14] * a) / b;
+    transform[15] = Math.floor(transform[15] * a) / b;
 
     var sNewTransform = this._stringifyMatrix(transform);
 
@@ -723,26 +726,24 @@ DOMRenderer.prototype.removeClass = function removeClass(domClass) {
  * @return {String}     Stringified matrix as `matrix3d`-property.
  */
 DOMRenderer.prototype._stringifyMatrix = function _stringifyMatrix(m) {
-    var r = 'matrix3d(';
-
-    r += (m[0] < 0.000001 && m[0] > -0.000001) ? '0,' : m[0] + ',';
-    r += (m[1] < 0.000001 && m[1] > -0.000001) ? '0,' : m[1] + ',';
-    r += (m[2] < 0.000001 && m[2] > -0.000001) ? '0,' : m[2] + ',';
-    r += (m[3] < 0.000001 && m[3] > -0.000001) ? '0,' : m[3] + ',';
-    r += (m[4] < 0.000001 && m[4] > -0.000001) ? '0,' : m[4] + ',';
-    r += (m[5] < 0.000001 && m[5] > -0.000001) ? '0,' : m[5] + ',';
-    r += (m[6] < 0.000001 && m[6] > -0.000001) ? '0,' : m[6] + ',';
-    r += (m[7] < 0.000001 && m[7] > -0.000001) ? '0,' : m[7] + ',';
-    r += (m[8] < 0.000001 && m[8] > -0.000001) ? '0,' : m[8] + ',';
-    r += (m[9] < 0.000001 && m[9] > -0.000001) ? '0,' : m[9] + ',';
-    r += (m[10] < 0.000001 && m[10] > -0.000001) ? '0,' : m[10] + ',';
-    r += (m[11] < 0.000001 && m[11] > -0.000001) ? '0,' : m[11] + ',';
-    r += (m[12] < 0.000001 && m[12] > -0.000001) ? '0,' : m[12] + ',';
-    r += (m[13] < 0.000001 && m[13] > -0.000001) ? '0,' : m[13] + ',';
-    r += (m[14] < 0.000001 && m[14] > -0.000001) ? '0,' : m[14] + ',';
-
-    r += m[15] + ')';
-    return r;
+    return 'matrix3d(' +
+        ((m[0] < 0.000001 && m[0] > -0.000001) ? '0,' : m[0] + ',') +
+        ((m[1] < 0.000001 && m[1] > -0.000001) ? '0,' : m[1] + ',') +
+        ((m[2] < 0.000001 && m[2] > -0.000001) ? '0,' : m[2] + ',') +
+        ((m[3] < 0.000001 && m[3] > -0.000001) ? '0,' : m[3] + ',') +
+        ((m[4] < 0.000001 && m[4] > -0.000001) ? '0,' : m[4] + ',') +
+        ((m[5] < 0.000001 && m[5] > -0.000001) ? '0,' : m[5] + ',') +
+        ((m[6] < 0.000001 && m[6] > -0.000001) ? '0,' : m[6] + ',') +
+        ((m[7] < 0.000001 && m[7] > -0.000001) ? '0,' : m[7] + ',') +
+        ((m[8] < 0.000001 && m[8] > -0.000001) ? '0,' : m[8] + ',') +
+        ((m[9] < 0.000001 && m[9] > -0.000001) ? '0,' : m[9] + ',') +
+        ((m[10] < 0.000001 && m[10] > -0.000001) ? '0,' : m[10] + ',') +
+        ((m[11] < 0.000001 && m[11] > -0.000001) ? '0,' : m[11] + ',') +
+        ((m[12] < 0.000001 && m[12] > -0.000001) ? '0,' : m[12] + ',') +
+        ((m[13] < 0.000001 && m[13] > -0.000001) ? '0,' : m[13] + ',') +
+        ((m[14] < 0.000001 && m[14] > -0.000001) ? '0,' : m[14] + ',') +
+        (m[15] + ')')
+        ;
 };
 
 /**
