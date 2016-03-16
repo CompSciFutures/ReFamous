@@ -43,6 +43,8 @@ var famous = require("refamous");
 famous.core.FamousEngine.renderLoop._FPSCounter.logFPSToConsole();
 ```
 
+Note that (Re)Famous will start logging warnings to the console if the frame rate drops below 10 FPS or if the render loop's CPU usage goes above 10%.
+
 ## Getting Started    
 
 We have several [guides & tutorials on our site](http://famous.org/learn/) to help you get up and running with Famous, such as [Hello Famous](http://famous.org/learn/hello-famous.html).
