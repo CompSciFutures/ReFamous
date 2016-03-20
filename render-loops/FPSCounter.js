@@ -27,9 +27,8 @@
 var N_BUCKETS = 10, BUCKET_DURATION_IN_MS = 1000; // keep track of last 10 seconds
 var PAUSE_BETWEEN_CONSOLE_LOGS_MS = 5000;
 var TARGET_FPS = 15;
-var SLOW_FPS_THRESHOLD = 10;
-var SLOW_MSPF_THRESHOLD = 15;
-var EXCESSIVE_CPU_THRESHOLD = 0.1;
+var SLOW_FPS_THRESHOLD = 0.7; // min proportion of target FPS (eg, 1.0 = current target FPS, 0.5 = 50% of current target FPS)
+var EXCESSIVE_CPU_THRESHOLD = 0.1; // max proportion of CPU use (1.0 = 100% of CPU)
 
 /**
  * To get famous to log it's current FPS, MSPF & CPU %, do the following:
@@ -100,16 +99,13 @@ FPSCounter.prototype.setTargetFPS = function(iFPS) {
 FPSCounter.prototype._logFPSToConsoleIfSlow = function() {
     if (Date.now() - this._ttLastPerformanceCheck > PAUSE_BETWEEN_CONSOLE_LOGS_MS) {
         var oFrameRateStats = this._getFrameRateStats();
-        var bSlowFrameRate = oFrameRateStats.FPS !== null && oFrameRateStats.FPS < SLOW_FPS_THRESHOLD;
-        var bSlowMSPF = oFrameRateStats.MSPF !== null && oFrameRateStats.MSPF > SLOW_MSPF_THRESHOLD;
+        var bSlowFrameRate = oFrameRateStats.FPS !== null && oFrameRateStats.FPS < this._iTargetFPS * SLOW_FPS_THRESHOLD;
         var bExcessiveCPU = oFrameRateStats.FPS !== null && oFrameRateStats.MSPF !== null && (oFrameRateStats.MSPF * oFrameRateStats.FPS)/1000.0 > EXCESSIVE_CPU_THRESHOLD;
-        if (oFrameRateStats.FPS !== null && (!this._ttLastPerformanceCheck || bSlowFrameRate || bSlowMSPF || bExcessiveCPU)) {
+        if (oFrameRateStats.FPS !== null && (!this._ttLastPerformanceCheck || bSlowFrameRate || bExcessiveCPU)) {
             this.logFPSToConsole(
                 bSlowFrameRate ? "Slow frame rate detected" :
-                    bSlowMSPF ? "Slow update detected" :
-                        bExcessiveCPU ? "excessive CPU use" :
-                            "unknown cause"
-
+                    bExcessiveCPU ? "excessive CPU use" :
+                        "unknown cause"
             );
             this._ttLastPerformanceCheck = Date.now();
         }
